@@ -1,0 +1,58 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: votosbr
+      POSTGRES_USER: votosbr
+      POSTGRES_PASSWORD: votosbr
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U votosbr -d votosbr"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Aplica as migrações antes de API e worker subirem.
+  migrate:
+    build: .
+    command: ["alembic", "upgrade", "head"]
+    environment: &env
+      DATABASE_URL: postgresql+psycopg://votosbr:votosbr@db:5432/votosbr
+      DATABASE_URL_READONLY: postgresql+psycopg://votosbr_leitura:votosbr_leitura@db:5432/votosbr
+      RAW_STORE_PATH: /data/raw
+      LOG_JSON: "true"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build: .
+    environment: *env
+    ports:
+      - "8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  # Worker de ingestão. Execução sob demanda ou agendada pelo host (cron/systemd/CI):
+  #   docker compose run --rm worker                      -> votosbr run diario
+  #   docker compose run --rm worker ingest camara-votacoes --dry-run
+  worker:
+    build: .
+    entrypoint: ["votosbr"]
+    command: ["run", "diario"]
+    environment: *env
+    volumes:
+      - rawdata:/data/raw
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    profiles: ["worker"]
+
+volumes:
+  pgdata:
+  rawdata:

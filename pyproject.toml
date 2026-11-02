@@ -1,0 +1,82 @@
+[project]
+name = "votosbr"
+version = "0.1.0"
+description = "Backend do VotosBR: ingestão de votações do Congresso e API somente leitura."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.13",
+    "fastapi>=0.115",
+    "httpx>=0.27",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.8",
+    "pydantic-settings>=2.4",
+    "pyyaml>=6.0",
+    "sqlalchemy>=2.0.30",
+    "structlog>=24.1",
+    "tenacity>=8.5",
+    "typer>=0.12",
+    "tzdata>=2024.1",
+    "uvicorn[standard]>=0.30",
+]
+
+[project.scripts]
+votosbr = "votosbr.cli:app"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pre-commit>=3.8",
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "respx>=0.21",
+    "ruff>=0.6",
+    "types-pyyaml>=6.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/votosbr"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "RUF", "DTZ"]
+ignore = [
+    "RUF001", "RUF002", "RUF003",  # acentos em strings/comentários são intencionais
+    "N818",  # exceções com nomes em português (ErroFonte)
+    "UP046",  # Generic explícito: compatível com modelos genéricos do pydantic
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Schemas de staging espelham os nomes originais das fontes (camelCase).
+"src/votosbr/sources/*/schemas.py" = ["N815"]
+"src/votosbr/db/migrations/versions/*.py" = ["E501"]
+# Typer usa chamadas em valores padrão por design.
+"src/votosbr/cli.py" = ["B008"]
+"src/votosbr/api/routers/*.py" = ["B008"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+warn_unused_ignores = true
+warn_redundant_casts = true
+ignore_missing_imports = true
+exclude = ["src/votosbr/db/migrations/"]
+
+[[tool.mypy.overrides]]
+module = ["votosbr.domain.*", "votosbr.etl.mappers.*", "votosbr.etl.jobs.base"]
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = [
+    "integration: exige PostgreSQL (TEST_DATABASE_URL); pulado se indisponível",
+]

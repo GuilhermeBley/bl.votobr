@@ -1,0 +1,4 @@
+# Decisões manuais de resolução de pessoas entre Casas (seção 6.6, T-205).
+# Formato:
+# - {camara: "<id deputado>", senado: "<CodigoParlamentar>", decisao: MESMA_PESSOA, autor: ..., motivo: ...}
+[]

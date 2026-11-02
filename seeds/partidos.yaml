@@ -1,0 +1,41 @@
+# Partidos e aliases por fonte (seção 6.6). Mantido manualmente.
+#
+# Siglas abaixo: as observadas em votos de Plenário da Câmara (tests/fixtures/camara/votos, out/2026),
+# com a grafia exata da fonte. Ainda faltam:
+#   - nomes oficiais e número eleitoral (TSE);
+#   - histórico: renomeações (alias com valido_de/valido_ate), fusões e incorporações (sucessor);
+#   - siglas do Senado (T-201).
+# Sigla sem alias válido na data -> partido_id nulo + alerta C04.
+#
+# Formato:
+#   - slug: identificador público imutável
+#     sigla_atual: ...
+#     sucessor: <slug>            # opcional, fusão/incorporação
+#     data_extincao: AAAA-MM-DD   # opcional
+#     aliases:
+#       - {fonte: CAMARA, sigla: ..., valido_de: null, valido_ate: null}
+
+- {slug: avante, sigla_atual: AVANTE, aliases: [{fonte: CAMARA, sigla: AVANTE}]}
+- {slug: cidadania, sigla_atual: CIDADANIA, aliases: [{fonte: CAMARA, sigla: CIDADANIA}]}
+- {slug: dc, sigla_atual: DC, aliases: [{fonte: CAMARA, sigla: DC}]}
+- {slug: mdb, sigla_atual: MDB, aliases: [{fonte: CAMARA, sigla: MDB}]}
+- {slug: missao, sigla_atual: MISSÃO, aliases: [{fonte: CAMARA, sigla: MISSÃO}]}
+- {slug: novo, sigla_atual: NOVO, aliases: [{fonte: CAMARA, sigla: NOVO}]}
+- {slug: pcdob, sigla_atual: PCdoB, aliases: [{fonte: CAMARA, sigla: PCdoB}]}
+- {slug: pdt, sigla_atual: PDT, aliases: [{fonte: CAMARA, sigla: PDT}]}
+# "PL" atual; o PL anterior a 2006 é outro partido (seção 2.2, item 5) e precisa de registro próprio.
+- {slug: pl, sigla_atual: PL, aliases: [{fonte: CAMARA, sigla: PL}]}
+- {slug: podemos, sigla_atual: PODE, aliases: [{fonte: CAMARA, sigla: PODE}]}
+# A Câmara usa mais de um id de partido para "PP" (36763, 36845, 37903); resolução por sigla + data.
+- {slug: pp, sigla_atual: PP, aliases: [{fonte: CAMARA, sigla: PP}]}
+- {slug: prd, sigla_atual: PRD, aliases: [{fonte: CAMARA, sigla: PRD}]}
+- {slug: psb, sigla_atual: PSB, aliases: [{fonte: CAMARA, sigla: PSB}]}
+- {slug: psd, sigla_atual: PSD, aliases: [{fonte: CAMARA, sigla: PSD}]}
+- {slug: psdb, sigla_atual: PSDB, aliases: [{fonte: CAMARA, sigla: PSDB}]}
+- {slug: psol, sigla_atual: PSOL, aliases: [{fonte: CAMARA, sigla: PSOL}]}
+- {slug: pt, sigla_atual: PT, aliases: [{fonte: CAMARA, sigla: PT}]}
+- {slug: pv, sigla_atual: PV, aliases: [{fonte: CAMARA, sigla: PV}]}
+- {slug: rede, sigla_atual: REDE, aliases: [{fonte: CAMARA, sigla: REDE}]}
+- {slug: republicanos, sigla_atual: REPUBLICANOS, aliases: [{fonte: CAMARA, sigla: REPUBLICANOS}]}
+- {slug: solidariedade, sigla_atual: SOLIDARIEDADE, aliases: [{fonte: CAMARA, sigla: SOLIDARIEDADE}]}
+- {slug: uniao, sigla_atual: UNIÃO, aliases: [{fonte: CAMARA, sigla: UNIÃO}]}

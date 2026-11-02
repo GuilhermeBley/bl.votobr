@@ -1,0 +1,9 @@
+# Mapeamento de orientações de bancada -> orientacao_tipo (seção 5.4).
+# Orientação vazia ("") significa que a bancada não orientou: não é gravada (decisão 009).
+
+"*":
+  Sim: SIM
+  Não: NAO
+  Abstenção: ABSTENCAO
+  Obstrução: OBSTRUCAO
+  Liberado: LIBERADO

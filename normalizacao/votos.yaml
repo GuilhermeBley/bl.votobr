@@ -1,0 +1,26 @@
+# Mapeamento de valores originais de voto -> voto_tipo (seção 5.4).
+# Comparação feita sem acentos, em minúsculas e com espaços colapsados.
+# "*" vale para qualquer fonte. Valor ausente daqui vira OUTRO + registro em valor_nao_mapeado.
+#
+# CAMARA: valores observados em tests/fixtures/camara/votos/ (2026-11-01).
+# SENADO: valores da seção 3.2, ainda NÃO validados com fixtures (T-201).
+
+CAMARA:
+  Sim: SIM
+  Não: NAO
+  Abstenção: ABSTENCAO
+  Obstrução: OBSTRUCAO
+  Artigo 17: PRESIDENTE
+
+SENADO:
+  Sim: SIM
+  Não: NAO
+  Abstenção: ABSTENCAO
+  P-NRV: PRESENTE_SEM_VOTO
+  Presidente (art. 51 RISF): PRESIDENTE
+  AP: AUSENTE_JUSTIFICADO
+  LS: AUSENTE_JUSTIFICADO
+  LP: AUSENTE_JUSTIFICADO
+  MIS: AUSENTE_JUSTIFICADO
+  NCom: AUSENTE
+  Votou: SECRETO

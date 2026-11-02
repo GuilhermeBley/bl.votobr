@@ -1,0 +1,12 @@
+# Curadoria de processos legislativos (seção 6.6). Prevalece sobre as regras automáticas (T-301).
+# Exemplo:
+# - slug: lei-12965-2014
+#   titulo: Marco Civil da Internet
+#   norma: {tipo: LEI, numero: 12965, ano: 2014}
+#   proposicoes:
+#     - {casa: CAMARA, sigla: PL, numero: 2126, ano: 2011}
+#     - {casa: SENADO, sigla: PLC, numero: 21, ano: 2014}
+#   temas: [tecnologia, direitos-digitais]
+#   destaque: true
+#   votacoes_principais: []
+[]

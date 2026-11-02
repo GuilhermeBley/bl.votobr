@@ -1,0 +1,45 @@
+# Regras de classificação do objeto da votação (seção 6.7).
+# Avaliadas em ordem sobre a descrição normalizada (sem acentos, minúscula). A primeira que casar vence.
+# Cada regra deve ter teste com descrição real (tests/unit/test_classificacao.py).
+
+- objeto: URGENCIA
+  padroes:
+    - 'requerimento de urgencia'
+    - 'urgencia \(art'
+
+- objeto: REDACAO_FINAL
+  padroes:
+    - 'redacao final'
+
+- objeto: DESTAQUE
+  padroes:
+    # "ressalvados os destaques" aparece na aprovação do texto-base; não é votação de destaque.
+    - '(?<!ressalvados os )\bdestaques?\b'
+    - '\bdvs\b'
+
+- objeto: REQUERIMENTO_PROCEDIMENTAL
+  padroes:
+    - '\brequerimento'
+
+- objeto: EMENDA
+  padroes:
+    - '^(?!.*(substitutiv|constituicao)).*\bemendas?\b'
+
+- objeto: TEXTO_BASE
+  padroes:
+    - 'texto-base'
+    - 'texto base'
+    - 'subemenda substitutiva'
+    - '\bsubstitutivo'
+    - 'projeto de lei de conversao'
+    - 'emenda a constituicao.*turno'
+    - 'aprovad[oa] o projeto'
+    - 'rejeitad[oa] o projeto'
+
+- objeto: PARECER
+  padroes:
+    - '\bparecer'
+
+- objeto: VETO
+  padroes:
+    - '\bveto'
