@@ -163,6 +163,14 @@ Usar para **backfill**; usar a API para **incremental** e para detalhes sob dema
 
 **Siglas de voto do Senado observadas** (manter a tabela de mapeamento configurável, seção 5.4): `Sim`, `Não`, `Abstenção`, `P-NRV` (presente, não registrou voto), `Presidente (art. 51 RISF)`, `AP` (atividade parlamentar), `LS` (licença saúde), `LP` (licença particular), `MIS` (missão), `NCom` (não compareceu), `Votou` (votação secreta). Podem existir outras.
 
+**Validado em 2026-11-02 (T-201, decisão 013):**
+- `GET /votacao?dataInicio=&dataFim=` (novo) responde JSON: lista sem envelope, camelCase, com os votos embutidos (`votos[]`). `dataFim` é **inclusivo** (na Câmara é exclusivo) e intervalos de meses são aceitos. Traz só votações nominais, inclusive secretas (`votacaoSecreta = "S"`, voto `Votou`); não traz hora nem orientação de bancada. Totais (`totalVotosSim` etc.) só vieram preenchidos em votação secreta.
+- O legado `/plenario/lista/votacao/{inicio}/{fim}` ainda responde, mas declara desativação prevista para 2026-02-01 e aponta `/votacao` como substituto; a cobertura dos dois foi idêntica em out/2026.
+- `/plenario/votacao/orientacaoBancada/{inicio}/{fim}` responde JSON com orientações e hora de início/fim da votação (ligação por `sequencialVotacao`); ainda não usado.
+- `GET /senador/{codigo}`: JSON derivado do XML (PascalCase, números como texto, sexo por extenso).
+- Siglas novas observadas em 2026: `LAP` ("Licença paternidade ou ao adotante") e `NA` ("Dispositivo não citado", significado não confirmado; fica sem mapeamento). Partido `S/Partido` = sem partido.
+- A API oscila: timeouts e conexões recusadas intermitentes; o retry do cliente absorve.
+
 ### 3.3 Congresso Nacional (fase futura)
 
 Sessões conjuntas: vetos (cédula eletrônica com votos separados por Casa) e PLN (orçamento). Dados no portal `https://www.congressonacional.leg.br` e em endpoints do Senado. Necessário para que a "derrubada de veto" faça parte da história de uma lei.
@@ -965,7 +973,7 @@ Resultado gravado em `resultado_check`. Check com severidade ERRO impede o refre
 
 ### 6.9 Agendamento e observabilidade
 
-- MVP: `cron`, timer do systemd ou agendamento de CI executando `votosbr run diario` às 06h (horário de Brasília), depois das sessões que avançam pela noite. Execuções extras em dias de sessão (ex.: 14h e 23h30) são opcionais; como toda execução cobre ontem e hoje (6.2.1), rodar mais vezes só melhora o frescor.
+- MVP: o worker do Docker Compose roda `votosbr run agendado`, processo contínuo que executa `votosbr run diario` ao subir e todo dia às 06h (horário de Brasília), depois das sessões que avançam pela noite (decisão 012). Fora do Compose, vale `cron`, timer do systemd ou agendamento de CI chamando `votosbr run diario`. Execuções extras em dias de sessão (ex.: 14h e 23h30) são opcionais; como toda execução cobre ontem e hoje (6.2.1), rodar mais vezes só melhora o frescor.
 - Se o grafo de jobs crescer, migrar para um orquestrador (Prefect ou Dagster).
 - Logs estruturados em JSON (`structlog`) sempre com `execucao_id`.
 - Alerta (e-mail, Slack ou Telegram) em falha de job ou check ERRO.
@@ -1208,7 +1216,7 @@ votosbr/
 ### Fase 0 — Fundação
 
 - **T-001 Repositório.** `uv`, `ruff`, `mypy`, `pytest`, `pre-commit`, CI. *Aceite:* CI roda lint e testes em PR.
-- **T-002 Ambiente local.** Docker Compose com Postgres 16 (`unaccent`, `pg_trgm`) e configuração via env. *Aceite:* `docker compose up` + `alembic upgrade head` funcionam do zero.
+- **T-002 Ambiente local.** Docker Compose com Postgres 16 (`unaccent`, `pg_trgm`) e configuração via env. *Aceite:* `docker compose up` sozinho sobe tudo do zero (banco, migrações + seeds, API e worker).
 - **T-003 Cliente HTTP base e RawStore** (seção 6.5). *Aceite:* retry e limite de taxa testados com `respx`; toda resposta gravada com hash e registrada em `raw_documento`.
 - **T-004 Modelo core e seeds** (seções 5.3 e 5.4). *Aceite:* migração inicial cria tabelas e enums; `votosbr seed` é idempotente.
 
@@ -1303,3 +1311,5 @@ votosbr/
 | 009 | 2026-11 | Orientação com valor vazio na Câmara não é gravada em `orientacao` | Na fonte, vazio significa que a bancada não orientou; gravar OUTRO criaria orientação inexistente. Métricas tratam como "orientação ausente" (fora da base). |
 | 010 | 2026-11 | Cliente da Câmara pede `dataFim = ate + 1` e filtra os itens por `data` | `dataFim` é exclusivo na fonte; sem a compensação, a fatia `[ontem, hoje]` perderia o dia atual. |
 | 011 | 2026-11 | `processar_fatia` retorna sucesso/falha; checkpoint só avança por fatias contíguas sem falha, mas todas as fatias são processadas | Concilia tolerância a falhas parciais (0.2.5) com "checkpoint = fim da última fatia contígua concluída" (6.2.1). |
+| 012 | 2026-11 | `docker compose up` sobe a aplicação inteira: `migrate` aplica migrações e seeds; o worker roda `votosbr run agendado` (diário ao subir + 06h Brasília) | Um único comando para subir o ambiente; migrações, seeds e o incremental são idempotentes, então reiniciar é seguro. |
+| 013 | 2026-11 | Senado: votações via `GET /votacao` (novo), e não `/plenario/lista/votacao` (legado). Proposição do Senado identificada por `idProcesso`. Orientação de bancada fica para depois | O legado anuncia desativação; o novo traz os votos embutidos (uma requisição por fatia) e o `idProcesso` dos endpoints novos de processo. |

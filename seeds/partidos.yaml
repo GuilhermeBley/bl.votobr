@@ -2,9 +2,9 @@
 #
 # Siglas abaixo: as observadas em votos de Plenário da Câmara (tests/fixtures/camara/votos, out/2026),
 # com a grafia exata da fonte. Ainda faltam:
-#   - nomes oficiais e número eleitoral (TSE);
+#   - número eleitoral (TSE); nomes e id_externo vêm de GET /partidos da Câmara (2026-11-02);
 #   - histórico: renomeações (alias com valido_de/valido_ate), fusões e incorporações (sucessor);
-#   - siglas do Senado (T-201).
+#   - aliases do Senado: só as siglas vistas em GET /votacao de 2026 ("S/Partido" = sem partido).
 # Sigla sem alias válido na data -> partido_id nulo + alerta C04.
 #
 # Formato:
@@ -15,27 +15,28 @@
 #     aliases:
 #       - {fonte: CAMARA, sigla: ..., valido_de: null, valido_ate: null}
 
-- {slug: avante, sigla_atual: AVANTE, aliases: [{fonte: CAMARA, sigla: AVANTE}]}
-- {slug: cidadania, sigla_atual: CIDADANIA, aliases: [{fonte: CAMARA, sigla: CIDADANIA}]}
+- {slug: avante, sigla_atual: AVANTE, nome: "Avante", aliases: [{fonte: CAMARA, sigla: AVANTE, id_externo: "36898"}, {fonte: SENADO, sigla: AVANTE}]}
+- {slug: cidadania, sigla_atual: CIDADANIA, nome: "Cidadania", aliases: [{fonte: CAMARA, sigla: CIDADANIA, id_externo: "37905"}]}
+# DC: não consta em GET /partidos da Câmara (consulta de 2026-11-02); nome a confirmar no TSE.
 - {slug: dc, sigla_atual: DC, aliases: [{fonte: CAMARA, sigla: DC}]}
-- {slug: mdb, sigla_atual: MDB, aliases: [{fonte: CAMARA, sigla: MDB}]}
-- {slug: missao, sigla_atual: MISSÃO, aliases: [{fonte: CAMARA, sigla: MISSÃO}]}
-- {slug: novo, sigla_atual: NOVO, aliases: [{fonte: CAMARA, sigla: NOVO}]}
-- {slug: pcdob, sigla_atual: PCdoB, aliases: [{fonte: CAMARA, sigla: PCdoB}]}
-- {slug: pdt, sigla_atual: PDT, aliases: [{fonte: CAMARA, sigla: PDT}]}
+- {slug: mdb, sigla_atual: MDB, nome: "Movimento Democrático Brasileiro", aliases: [{fonte: CAMARA, sigla: MDB, id_externo: "36899"}, {fonte: SENADO, sigla: MDB}]}
+- {slug: missao, sigla_atual: MISSÃO, nome: "Partido Missão", aliases: [{fonte: CAMARA, sigla: MISSÃO, id_externo: "38011"}]}
+- {slug: novo, sigla_atual: NOVO, nome: "Partido Novo", aliases: [{fonte: CAMARA, sigla: NOVO, id_externo: "37901"}, {fonte: SENADO, sigla: NOVO}]}
+- {slug: pcdob, sigla_atual: PCdoB, nome: "Partido Comunista do Brasil", aliases: [{fonte: CAMARA, sigla: PCdoB, id_externo: "36779"}]}
+- {slug: pdt, sigla_atual: PDT, nome: "Partido Democrático Trabalhista", aliases: [{fonte: CAMARA, sigla: PDT, id_externo: "36786"}, {fonte: SENADO, sigla: PDT}]}
 # "PL" atual; o PL anterior a 2006 é outro partido (seção 2.2, item 5) e precisa de registro próprio.
-- {slug: pl, sigla_atual: PL, aliases: [{fonte: CAMARA, sigla: PL}]}
-- {slug: podemos, sigla_atual: PODE, aliases: [{fonte: CAMARA, sigla: PODE}]}
+- {slug: pl, sigla_atual: PL, nome: "Partido Liberal", aliases: [{fonte: CAMARA, sigla: PL, id_externo: "37906"}, {fonte: SENADO, sigla: PL}]}
+- {slug: podemos, sigla_atual: PODE, nome: "Podemos", aliases: [{fonte: CAMARA, sigla: PODE, id_externo: "36896"}, {fonte: SENADO, sigla: PODE}]}
 # A Câmara usa mais de um id de partido para "PP" (36763, 36845, 37903); resolução por sigla + data.
-- {slug: pp, sigla_atual: PP, aliases: [{fonte: CAMARA, sigla: PP}]}
-- {slug: prd, sigla_atual: PRD, aliases: [{fonte: CAMARA, sigla: PRD}]}
-- {slug: psb, sigla_atual: PSB, aliases: [{fonte: CAMARA, sigla: PSB}]}
-- {slug: psd, sigla_atual: PSD, aliases: [{fonte: CAMARA, sigla: PSD}]}
-- {slug: psdb, sigla_atual: PSDB, aliases: [{fonte: CAMARA, sigla: PSDB}]}
-- {slug: psol, sigla_atual: PSOL, aliases: [{fonte: CAMARA, sigla: PSOL}]}
-- {slug: pt, sigla_atual: PT, aliases: [{fonte: CAMARA, sigla: PT}]}
-- {slug: pv, sigla_atual: PV, aliases: [{fonte: CAMARA, sigla: PV}]}
-- {slug: rede, sigla_atual: REDE, aliases: [{fonte: CAMARA, sigla: REDE}]}
-- {slug: republicanos, sigla_atual: REPUBLICANOS, aliases: [{fonte: CAMARA, sigla: REPUBLICANOS}]}
-- {slug: solidariedade, sigla_atual: SOLIDARIEDADE, aliases: [{fonte: CAMARA, sigla: SOLIDARIEDADE}]}
-- {slug: uniao, sigla_atual: UNIÃO, aliases: [{fonte: CAMARA, sigla: UNIÃO}]}
+- {slug: pp, sigla_atual: PP, nome: "Progressistas", aliases: [{fonte: CAMARA, sigla: PP, id_externo: "37903"}, {fonte: SENADO, sigla: PP}]}
+- {slug: prd, sigla_atual: PRD, nome: "Partido Renovação Democrática", aliases: [{fonte: CAMARA, sigla: PRD, id_externo: "38010"}]}
+- {slug: psb, sigla_atual: PSB, nome: "Partido Socialista Brasileiro", aliases: [{fonte: CAMARA, sigla: PSB, id_externo: "36832"}, {fonte: SENADO, sigla: PSB}]}
+- {slug: psd, sigla_atual: PSD, nome: "Partido Social Democrático", aliases: [{fonte: CAMARA, sigla: PSD, id_externo: "36834"}, {fonte: SENADO, sigla: PSD}]}
+- {slug: psdb, sigla_atual: PSDB, nome: "Partido da Social Democracia Brasileira", aliases: [{fonte: CAMARA, sigla: PSDB, id_externo: "36835"}, {fonte: SENADO, sigla: PSDB}]}
+- {slug: psol, sigla_atual: PSOL, nome: "Partido Socialismo e Liberdade", aliases: [{fonte: CAMARA, sigla: PSOL, id_externo: "36839"}]}
+- {slug: pt, sigla_atual: PT, nome: "Partido dos Trabalhadores", aliases: [{fonte: CAMARA, sigla: PT, id_externo: "36844"}, {fonte: SENADO, sigla: PT}]}
+- {slug: pv, sigla_atual: PV, nome: "Partido Verde", aliases: [{fonte: CAMARA, sigla: PV, id_externo: "36851"}]}
+- {slug: rede, sigla_atual: REDE, nome: "Rede Sustentabilidade", aliases: [{fonte: CAMARA, sigla: REDE, id_externo: "36886"}]}
+- {slug: republicanos, sigla_atual: REPUBLICANOS, nome: "Republicanos", aliases: [{fonte: CAMARA, sigla: REPUBLICANOS, id_externo: "37908"}, {fonte: SENADO, sigla: REPUBLICANOS}]}
+- {slug: solidariedade, sigla_atual: SOLIDARIEDADE, nome: "Solidariedade", aliases: [{fonte: CAMARA, sigla: SOLIDARIEDADE, id_externo: "37904"}]}
+- {slug: uniao, sigla_atual: UNIÃO, nome: "União Brasil", aliases: [{fonte: CAMARA, sigla: UNIÃO, id_externo: "38009"}, {fonte: SENADO, sigla: UNIÃO}]}

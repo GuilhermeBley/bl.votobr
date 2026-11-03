@@ -13,8 +13,9 @@
 
 - objeto: DESTAQUE
   padroes:
-    # "ressalvados os destaques" aparece na aprovação do texto-base; não é votação de destaque.
-    - '(?<!ressalvados os )\bdestaques?\b'
+    # "ressalvados os destaques" / "ressalvado o destaque" (Senado) aparecem na aprovação do
+    # texto-base; não é votação de destaque.
+    - '(?<!ressalvados os )(?<!ressalvado o )\bdestaques?\b'
     - '\bdvs\b'
 
 - objeto: REQUERIMENTO_PROCEDIMENTAL
@@ -35,6 +36,9 @@
     - 'emenda a constituicao.*turno'
     - 'aprovad[oa] o projeto'
     - 'rejeitad[oa] o projeto'
+    # Senado: "Votação nominal do Projeto de Lei Complementar nº 186, de 2026, nos termos do
+    # parecer." é a votação da própria matéria (o parecer só qualifica o texto votado).
+    - '^votacao nominal d[oa] (projeto|proposta)'
 
 - objeto: PARECER
   padroes:

@@ -1,21 +1,28 @@
 """CLI `votosbr` (seção 6.4). Cada comando cria uma linha em `execucao_ingestao`."""
 
+import time
 from collections.abc import Callable, Iterator
 from contextlib import contextmanager
 from datetime import UTC, date, datetime
 from typing import Any
 
+import structlog
 import typer
 
 from votosbr.config import get_settings
 from votosbr.db.session import engine_escrita, fabrica_sessao
+from votosbr.domain.tempo import proxima_execucao
 from votosbr.etl.controle import Execucao, SqlCheckpointRepo
 from votosbr.etl.jobs import camara_deputados, seed
 from votosbr.etl.jobs.base import PlanoJanela, executar_incremental, fatiar, planejar_janela
 from votosbr.etl.jobs.camara_votacoes import JOB as JOB_CAMARA_VOTACOES
 from votosbr.etl.jobs.camara_votacoes import JobCamaraVotacoes
 from votosbr.etl.jobs.contexto import ContextoJob
+from votosbr.etl.jobs.senado_votacoes import JOB as JOB_SENADO_VOTACOES
+from votosbr.etl.jobs.senado_votacoes import JobSenadoVotacoes
 from votosbr.logs import configurar_logs
+
+log = structlog.get_logger(__name__)
 
 app = typer.Typer(help="VotosBR: ingestão e manutenção dos dados.", no_args_is_help=True)
 ingest = typer.Typer(help="Coleta de dados das fontes.", no_args_is_help=True)
@@ -144,9 +151,21 @@ def cmd_senado_senadores(legislatura: int = typer.Option(...)) -> None:
 
 
 @ingest.command("senado-votacoes")
-def cmd_senado_votacoes(dry_run: bool = DRY_RUN) -> None:
-    """Incremental de votações do Senado com checkpoint."""
-    _pendente("T-203")
+def cmd_senado_votacoes(
+    desde: datetime | None = typer.Option(None, formats=["%Y-%m-%d"]),
+    ate: datetime | None = typer.Option(None, formats=["%Y-%m-%d"]),
+    dry_run: bool = DRY_RUN,
+) -> None:
+    """Incremental de votações do Senado com checkpoint; --desde/--ate para execução manual."""
+    ok = _incremental_ou_manual(
+        JOB_SENADO_VOTACOES,
+        lambda ctx: JobSenadoVotacoes(ctx).processar_fatia,
+        desde.date() if desde else None,
+        ate.date() if ate else None,
+        dry_run,
+    )
+    if not ok:
+        raise typer.Exit(code=1)
 
 
 # --- checkpoint -------------------------------------------------------------------------------
@@ -174,19 +193,51 @@ def cmd_checkpoint_definir(
 @run.command("diario")
 def cmd_run_diario() -> None:
     """Incremental completo (seção 6.3). Etapas ainda não implementadas são puladas com aviso."""
-    ok = _incremental_ou_manual(
+    if not _executar_diario():
+        raise typer.Exit(code=1)
+
+
+@run.command("agendado")
+def cmd_run_agendado(
+    hora: int = typer.Option(6, min=0, max=23, help="Hora (Brasília) da execução diária."),
+    ao_iniciar: bool = typer.Option(True, help="Executa uma vez assim que o processo sobe."),
+) -> None:
+    """Processo contínuo: `run diario` todo dia na hora indicada (worker do Docker Compose)."""
+    if ao_iniciar:
+        _executar_diario_protegido()
+    while True:
+        alvo = proxima_execucao(datetime.now(UTC), hora)
+        log.info("agendado.aguardando", proxima=alvo.isoformat())
+        time.sleep(max(0.0, (alvo - datetime.now(UTC)).total_seconds()))
+        _executar_diario_protegido()
+
+
+def _executar_diario_protegido() -> None:
+    """Uma falha não derruba o agendador; o histórico fica em `execucao_ingestao`."""
+    try:
+        ok = _executar_diario()
+    except Exception:
+        log.exception("agendado.erro")
+    else:
+        log.info("agendado.concluido", sucesso=ok)
+
+
+def _executar_diario() -> bool:
+    # Uma fonte fora do ar não impede a outra; o resultado combina as duas.
+    ok_camara = _incremental_ou_manual(
         JOB_CAMARA_VOTACOES, lambda ctx: JobCamaraVotacoes(ctx).processar_fatia, None, None, False
     )
+    ok_senado = _incremental_ou_manual(
+        JOB_SENADO_VOTACOES, lambda ctx: JobSenadoVotacoes(ctx).processar_fatia, None, None, False
+    )
     for etapa in (
-        "senado-votacoes (T-203)",
         "classify votacoes (T-303)",
         "derive nao-registrou (T-107)",
         "check qualidade (T-305)",
         "refresh views (T-403)",
     ):
         typer.echo(f"pulado: {etapa}", err=True)
-    if not ok:
-        raise typer.Exit(code=1)
+    return ok_camara and ok_senado
 
 
 # --- etapas futuras ---------------------------------------------------------------------------

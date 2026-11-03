@@ -1,4 +1,4 @@
-"""Regras de objeto com descrições reais da Câmara (out/2026)."""
+"""Regras de objeto com descrições reais da Câmara (out/2026) e do Senado (2026)."""
 
 import pytest
 
@@ -27,6 +27,21 @@ from votosbr.domain.enums import VotacaoModalidade, VotacaoObjeto, VotoTipo
             "Aprovada a Subemenda Substitutiva Global ao Projeto de Lei Complementar nº 186, de "
             "2026, adotada pelo relator da Comissão de Indústria, Comércio e Serviços, ressalvados "
             "os destaques. Sim: 461; Não: 4; Total: 465.",
+            VotacaoObjeto.TEXTO_BASE,
+        ),
+        (
+            "Votação nominal do Projeto de Lei Complementar nº 186, de 2026, nos termos do "
+            "parecer.",
+            VotacaoObjeto.TEXTO_BASE,
+        ),
+        (
+            "Votação nominal da Proposta de Emenda à Constituição nº 221, de 2019, em primeiro "
+            "turno.",
+            VotacaoObjeto.TEXTO_BASE,
+        ),
+        (
+            "Votação nominal da Emenda nº 8 (Substitutivo) ao Projeto de Lei nº 896, de 2023, nos "
+            "termos do parecer, ressalvado o destaque.",
             VotacaoObjeto.TEXTO_BASE,
         ),
         (None, VotacaoObjeto.OUTRO),

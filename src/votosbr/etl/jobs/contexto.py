@@ -12,6 +12,7 @@ from votosbr.etl.controle import Execucao, SqlCheckpointRepo, SqlRegistroRaw
 from votosbr.sources.camara.client import CamaraClient, criar_http_camara
 from votosbr.sources.http import HttpClient
 from votosbr.sources.raw_store import RawStore
+from votosbr.sources.senado.client import SenadoClient, criar_http_senado
 
 
 @dataclass
@@ -32,6 +33,12 @@ class ContextoJob:
         http = criar_http_camara(self.settings, self.raw_store)
         self._clientes_http.append(http)
         return CamaraClient(http)
+
+    @cached_property
+    def senado(self) -> SenadoClient:
+        http = criar_http_senado(self.settings, self.raw_store)
+        self._clientes_http.append(http)
+        return SenadoClient(http)
 
     @cached_property
     def checkpoints(self) -> SqlCheckpointRepo:

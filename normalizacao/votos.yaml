@@ -3,7 +3,9 @@
 # "*" vale para qualquer fonte. Valor ausente daqui vira OUTRO + registro em valor_nao_mapeado.
 #
 # CAMARA: valores observados em tests/fixtures/camara/votos/ (2026-11-01).
-# SENADO: valores da seção 3.2, ainda NÃO validados com fixtures (T-201).
+# SENADO: valores observados em GET /votacao de 2026 (fev–out, consulta de 2026-11-02).
+#   "NA" ("Dispositivo não citado", 7 ocorrências em 15/04/2026) fica sem mapeamento de
+#   propósito: significado não confirmado; vira OUTRO + valor_nao_mapeado.
 
 CAMARA:
   Sim: SIM
@@ -22,5 +24,6 @@ SENADO:
   LS: AUSENTE_JUSTIFICADO
   LP: AUSENTE_JUSTIFICADO
   MIS: AUSENTE_JUSTIFICADO
+  LAP: AUSENTE_JUSTIFICADO  # "Licença paternidade ou ao adotante"
   NCom: AUSENTE
   Votou: SECRETO

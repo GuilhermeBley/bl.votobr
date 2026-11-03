@@ -1,2 +1,37 @@
-# Temas curados (T-304). Formato: - {slug: tecnologia, nome: Tecnologia}
-[]
+# Temas (T-304): vocabulário oficial de temas de proposições da Câmara,
+# GET /referencias/proposicoes/codTema (consulta de 2026-11-02). `cod_camara` serve para
+# mapear os temas que a fonte atribui às proposições; temas curados podem ser acrescentados.
+# Formato: - {slug: ..., nome: ..., cod_camara: ...}
+
+- {slug: administracao-publica, nome: "Administração Pública", cod_camara: 34}
+- {slug: agricultura-pecuaria-pesca-e-extrativismo, nome: "Agricultura, Pecuária, Pesca e Extrativismo", cod_camara: 64}
+- {slug: arte-cultura-e-religiao, nome: "Arte, Cultura e Religião", cod_camara: 35}
+- {slug: cidades-e-desenvolvimento-urbano, nome: "Cidades e Desenvolvimento Urbano", cod_camara: 41}
+- {slug: ciencia-tecnologia-e-inovacao, nome: "Ciência, Tecnologia e Inovação", cod_camara: 62}
+- {slug: ciencias-exatas-e-da-terra, nome: "Ciências Exatas e da Terra", cod_camara: 85}
+- {slug: ciencias-sociais-e-humanas, nome: "Ciências Sociais e Humanas", cod_camara: 86}
+- {slug: comunicacoes, nome: "Comunicações", cod_camara: 37}
+- {slug: defesa-e-seguranca, nome: "Defesa e Segurança", cod_camara: 57}
+- {slug: direito-civil-e-processual-civil, nome: "Direito Civil e Processual Civil", cod_camara: 42}
+- {slug: direito-constitucional, nome: "Direito Constitucional", cod_camara: 68}
+- {slug: direito-penal-e-processual-penal, nome: "Direito Penal e Processual Penal", cod_camara: 43}
+- {slug: direito-e-defesa-do-consumidor, nome: "Direito e Defesa do Consumidor", cod_camara: 67}
+- {slug: direito-e-justica, nome: "Direito e Justiça", cod_camara: 76}
+- {slug: direitos-humanos-e-minorias, nome: "Direitos Humanos e Minorias", cod_camara: 44}
+- {slug: economia, nome: "Economia", cod_camara: 40}
+- {slug: educacao, nome: "Educação", cod_camara: 46}
+- {slug: energia-recursos-hidricos-e-minerais, nome: "Energia, Recursos Hídricos e Minerais", cod_camara: 54}
+- {slug: esporte-e-lazer, nome: "Esporte e Lazer", cod_camara: 39}
+- {slug: estrutura-fundiaria, nome: "Estrutura Fundiária", cod_camara: 51}
+- {slug: financas-publicas-e-orcamento, nome: "Finanças Públicas e Orçamento", cod_camara: 70}
+- {slug: homenagens-e-datas-comemorativas, nome: "Homenagens e Datas Comemorativas", cod_camara: 72}
+- {slug: industria-comercio-e-servicos, nome: "Indústria, Comércio e Serviços", cod_camara: 66}
+- {slug: meio-ambiente-e-desenvolvimento-sustentavel, nome: "Meio Ambiente e Desenvolvimento Sustentável", cod_camara: 48}
+- {slug: politica-partidos-e-eleicoes, nome: "Política, Partidos e Eleições", cod_camara: 74}
+- {slug: previdencia-e-assistencia-social, nome: "Previdência e Assistência Social", cod_camara: 52}
+- {slug: processo-legislativo-e-atuacao-parlamentar, nome: "Processo Legislativo e Atuação Parlamentar", cod_camara: 53}
+- {slug: relacoes-internacionais-e-comercio-exterior, nome: "Relações Internacionais e Comércio Exterior", cod_camara: 55}
+- {slug: saude, nome: "Saúde", cod_camara: 56}
+- {slug: trabalho-e-emprego, nome: "Trabalho e Emprego", cod_camara: 58}
+- {slug: turismo, nome: "Turismo", cod_camara: 60}
+- {slug: viacao-transporte-e-mobilidade, nome: "Viação, Transporte e Mobilidade", cod_camara: 61}

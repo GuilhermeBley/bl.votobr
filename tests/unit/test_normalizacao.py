@@ -11,6 +11,13 @@ def test_todos_os_votos_das_fixtures_da_camara_mapeados(normalizador: Normalizad
         assert normalizador.voto(FonteDado.CAMARA, v["tipoVoto"]).mapeado, v["tipoVoto"]
 
 
+def test_todos_os_votos_das_fixtures_do_senado_mapeados(normalizador: Normalizador) -> None:
+    for votacao in carregar_fixture("senado/votacoes/plenario_20260901_20261031.json"):
+        for v in votacao["votos"]:
+            sigla = v["siglaVotoParlamentar"]
+            assert normalizador.voto(FonteDado.SENADO, sigla).mapeado, sigla
+
+
 def test_todas_as_orientacoes_nao_vazias_mapeadas(normalizador: Normalizador) -> None:
     for o in carregar_fixture("camara/orientacoes/nominal.json")["dados"]:
         if o["orientacaoVoto"]:
@@ -26,6 +33,8 @@ def test_todas_as_orientacoes_nao_vazias_mapeadas(normalizador: Normalizador) ->
         (FonteDado.SENADO, "P-NRV", VotoTipo.PRESENTE_SEM_VOTO),
         (FonteDado.SENADO, "MIS", VotoTipo.AUSENTE_JUSTIFICADO),
         (FonteDado.SENADO, "Votou", VotoTipo.SECRETO),
+        (FonteDado.SENADO, "LAP", VotoTipo.AUSENTE_JUSTIFICADO),
+        (FonteDado.SENADO, "NA", VotoTipo.OUTRO),  # sem mapeamento de propósito (votos.yaml)
     ],
 )
 def test_mapeamento(

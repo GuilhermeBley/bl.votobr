@@ -16,10 +16,10 @@ services:
       timeout: 3s
       retries: 10
 
-  # Aplica as migrações antes de API e worker subirem.
+  # Prepara o banco antes de API e worker subirem: migrações + seeds (ambos idempotentes).
   migrate:
     build: .
-    command: ["alembic", "upgrade", "head"]
+    command: ["sh", "-c", "alembic upgrade head && votosbr seed"]
     environment: &env
       DATABASE_URL: postgresql+psycopg://votosbr:votosbr@db:5432/votosbr
       DATABASE_URL_READONLY: postgresql+psycopg://votosbr_leitura:votosbr_leitura@db:5432/votosbr
@@ -34,24 +34,24 @@ services:
     environment: *env
     ports:
       - "8000:8000"
+    restart: unless-stopped
     depends_on:
       migrate:
         condition: service_completed_successfully
 
-  # Worker de ingestão. Execução sob demanda ou agendada pelo host (cron/systemd/CI):
-  #   docker compose run --rm worker                      -> votosbr run diario
-  #   docker compose run --rm worker ingest camara-votacoes --dry-run
+  # Worker de ingestão: roda `run diario` ao subir e todo dia às 06h (Brasília).
+  # Comandos avulsos: docker compose run --rm worker ingest camara-votacoes --dry-run
   worker:
     build: .
     entrypoint: ["votosbr"]
-    command: ["run", "diario"]
+    command: ["run", "agendado"]
     environment: *env
     volumes:
       - rawdata:/data/raw
+    restart: unless-stopped
     depends_on:
       migrate:
         condition: service_completed_successfully
-    profiles: ["worker"]
 
 volumes:
   pgdata:
